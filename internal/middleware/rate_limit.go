@@ -6,6 +6,8 @@ import (
 	"time"
 	"visit-service/internal/network" // Import your IP helper
 
+	"log/slog"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
 )
@@ -29,6 +31,7 @@ func RateLimit() gin.HandlerFunc {
 		limiter.mu.Unlock()
 
 		if !l.Allow() {
+			slog.Warn("Rate limit hit for " + userIP)
 			c.JSON(http.StatusTooManyRequests, gin.H{
 				"error": "too many requests",
 				"ip":    userIP,

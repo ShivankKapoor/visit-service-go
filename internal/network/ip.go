@@ -1,6 +1,7 @@
 package network
 
 import (
+	"log/slog"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,7 @@ func GetClientIP(c *gin.Context) string {
 	}
 
 	// 2. Check X-Forwarded-For (can be a comma-separated list)
+	slog.Warn("No Cloudflare IP found falling back to X-Forwarded-For")
 	xForwardedFor := c.GetHeader("X-Forwarded-For")
 	if xForwardedFor != "" {
 		// The first IP in the list is the original client
@@ -23,5 +25,6 @@ func GetClientIP(c *gin.Context) string {
 	}
 
 	// 3. Fallback to the direct connection IP (RemoteAddr)
+	slog.Warn("No X-Forwarded-For found falling back to regular IP header")
 	return c.ClientIP()
 }
