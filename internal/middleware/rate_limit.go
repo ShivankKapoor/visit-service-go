@@ -23,7 +23,7 @@ func RateLimit() gin.HandlerFunc {
 
 		limiter.mu.Lock()
 		if _, exists := limiter.ips[userIP]; !exists {
-			limiter.ips[userIP] = rate.NewLimiter(rate.Every(time.Minute/10), 10)
+			limiter.ips[userIP] = rate.NewLimiter(rate.Every(time.Minute/20), 20)
 		}
 		l := limiter.ips[userIP]
 		limiter.mu.Unlock()
