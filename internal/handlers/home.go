@@ -7,9 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func HealthCheck(c *gin.Context) {
+func Home(c *gin.Context) {
 
-	reponse := models.HealthCheckResponse{
+	reponse := models.HomeResponse{
 		Name:     "Visit Service",
 		Platform: "Go",
 		Status:   "Up",

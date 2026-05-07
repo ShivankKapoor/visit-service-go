@@ -1,6 +1,6 @@
 package models
 
-type HealthCheckResponse struct {
+type HomeResponse struct {
 	Name     string `json:"name"`
 	Platform string `json:"platform"`
 	Status   string `json:"status"`
