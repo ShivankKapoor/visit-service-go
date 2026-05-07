@@ -11,5 +11,6 @@ func Configure(r *gin.Engine) {
 	{
 		// We reference the function from the handlers package
 		v1.GET("/", handlers.Home)
+		v1.POST("/track", handlers.Track)
 	}
 }
