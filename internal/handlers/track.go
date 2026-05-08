@@ -35,5 +35,7 @@ func Track(c *gin.Context) {
 		Timestamp:   time.Now().UTC().Format(time.RFC3339),
 	}
 
-	service.Track(c, visit)
+	go service.TrackAsync(visit)
+
+	c.JSON(http.StatusOK, gin.H{"message": "OK"})
 }
