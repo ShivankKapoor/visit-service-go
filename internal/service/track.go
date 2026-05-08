@@ -19,6 +19,6 @@ func TrackAsync(visit models.PageVisit) {
 	if err == nil {
 		location = locationReq.City + ", " + locationReq.RegionName + ", " + locationReq.Country
 	}
-
+	SendVisitMessage(visit, location)
 	slog.Info("Visit recorded", "ip", visit.IPAddress, "page", visit.PageVisited, "device", visit.DeviceInfo, "location", location)
 }
