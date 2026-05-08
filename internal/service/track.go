@@ -17,8 +17,12 @@ func Track(c *gin.Context, visit models.PageVisit) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to record visit"})
 		return
 	}
-
-	slog.Info("Visit recorded", "ip", visit.IPAddress, "page", visit.PageVisited, "device", visit.DeviceInfo)
+	locationReq, err := GetLocation(visit.IPAddress)
+	var location = "unknown"
+	if err == nil {
+		location = locationReq.City + ", " + locationReq.RegionName + ", " + locationReq.Country
+	}
+	slog.Info("Visit recorded", "IP:", visit.IPAddress, "Page:", visit.PageVisited, "Device:", visit.DeviceInfo, "Location:", location)
 
 	c.JSON(http.StatusOK, gin.H{"message": "OK"})
 }
