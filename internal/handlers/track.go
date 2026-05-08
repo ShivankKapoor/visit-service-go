@@ -29,7 +29,7 @@ func Track(c *gin.Context) {
 		deviceInfo = deviceInfo[:idx]
 	}
 
-	visit := repositories.PageVisit{
+	visit := models.PageVisit{
 		ID:          uuid.New().String(),
 		IPAddress:   clientIP,
 		PageVisited: req.PageVisited,
