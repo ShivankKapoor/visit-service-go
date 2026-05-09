@@ -12,6 +12,7 @@ func Configure(r *gin.Engine) {
 	{
 		v1.GET("/", handlers.Home)
 		v1.POST("/track", middleware.AllowedReferer(), handlers.Track)
+		v1.GET("/health", handlers.Health)
 		v1.GET("/admin/run-summary", handlers.TriggerDailySummary)
 	}
 }
