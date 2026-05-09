@@ -71,7 +71,7 @@ func SendVisitMessage(visit models.PageVisit, location string) {
 		device = *visit.DeviceInfo
 	}
 
-	content := fmt.Sprintf("🌎 Visitor\nIP: %s\nLocation: %s\nPage: %s\nDevice: %s\n%s", visit.IPAddress, location, visit.PageVisited, device, getEmoji())
+	content := fmt.Sprintf("🌎 Visitor\nIP: %s\nLocation: %s\nPage: %s\nDevice: %s\n%s\n", visit.IPAddress, location, visit.PageVisited, device, getEmoji())
 
 	body := models.DiscordRequest{
 		Content: content,
@@ -81,7 +81,7 @@ func SendVisitMessage(visit models.PageVisit, location string) {
 }
 
 func SendDailyVisitsMessage(noOfVisits int) {
-	content := fmt.Sprintf("✅ Cron Report \nNumber of Visits: %d\n%s", noOfVisits, getEmoji())
+	content := fmt.Sprintf("✅ Cron Report \nNumber of Visits: %d\n%s\n", noOfVisits, getEmoji())
 
 	body := models.DiscordRequest{
 		Content: content,
