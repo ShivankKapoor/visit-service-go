@@ -50,3 +50,13 @@ func SendVisitMessage(visit models.PageVisit, location string) {
 
 	send(body)
 }
+
+func SendDailyVisitsMessage(noOfVisits int) {
+	content := fmt.Sprintf("✅ Cron Report \nNumber of Visits: %d\n%s", noOfVisits, getEmoji())
+
+	body := models.DiscordRequest{
+		Content: content,
+	}
+
+	send(body)
+}
