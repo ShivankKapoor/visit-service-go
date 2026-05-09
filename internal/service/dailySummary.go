@@ -13,11 +13,18 @@ import (
 var cronScheduler *cron.Cron
 
 func RunDailySummary() {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	slog.Info("Starting daily summary job")
 
 	count, err := repositories.GetYesterdayVisitCount(ctx)
 	if err != nil {
-		slog.Error("Error getting daily summary", "error", err)
+		if ctx.Err() == context.DeadlineExceeded {
+			slog.Error("Daily summary job timeout: failed to get visit count", "timeout", "30s")
+		} else {
+			slog.Error("Error getting daily summary", "error", err)
+		}
 		return
 	}
 
@@ -38,7 +45,11 @@ func RunDailySummary() {
 
 	err = repositories.SaveDailyStats(ctx, stats)
 	if err != nil {
-		slog.Error("Error saving daily stats", "error", err)
+		if ctx.Err() == context.DeadlineExceeded {
+			slog.Error("Daily summary job timeout: failed to save stats", "timeout", "30s")
+		} else {
+			slog.Error("Error saving daily stats", "error", err)
+		}
 		return
 	}
 

@@ -3,14 +3,22 @@ package service
 import (
 	"context"
 	"log/slog"
+	"time"
 	"visit-service/internal/models"
 	"visit-service/internal/repositories"
 )
 
 func TrackAsync(visit models.PageVisit) {
-	err := repositories.InsertPageVisit(context.Background(), visit)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	err := repositories.InsertPageVisit(ctx, visit)
 	if err != nil {
-		slog.Error("Failed to insert page visit", "error", err)
+		if ctx.Err() == context.DeadlineExceeded {
+			slog.Error("Timeout inserting page visit", "ip", visit.IPAddress, "timeout", "30s")
+		} else {
+			slog.Error("Failed to insert page visit", "ip", visit.IPAddress, "error", err)
+		}
 		return
 	}
 

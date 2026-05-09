@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -18,6 +19,12 @@ func Track(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	if err := validateTrackRequest(req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	clientIP := network.GetClientIP(c)
 	userAgent := c.Request.Header.Get("User-Agent")
 
@@ -38,4 +45,20 @@ func Track(c *gin.Context) {
 	go service.TrackAsync(visit)
 
 	c.JSON(http.StatusOK, gin.H{"message": "OK"})
+}
+
+func validateTrackRequest(req models.TrackRequest) error {
+	if req.PageVisited == "" {
+		return fmt.Errorf("pageVisited is required")
+	}
+
+	if len(req.PageVisited) > 2048 {
+		return fmt.Errorf("pageVisited exceeds maximum length of 2048")
+	}
+
+	if len(req.DeviceInfo) > 500 {
+		return fmt.Errorf("deviceInfo exceeds maximum length of 500")
+	}
+
+	return nil
 }
