@@ -33,7 +33,13 @@ func SendVisitMessage(visit models.PageVisit, location string) {
 		device = *visit.DeviceInfo
 	}
 
-	content := fmt.Sprintf("🌎 Visitor\nIP: %s\nLocation: %s\nPage: %s\nDevice: %s\n🐹", visit.IPAddress, location, visit.PageVisited, device)
+	customEmoji := os.Getenv("CUSTOM_EMOJI_ID")
+	emoji := "🐹"
+	if customEmoji != "" {
+		emoji = customEmoji
+	}
+
+	content := fmt.Sprintf("🌎 Visitor\nIP: %s\nLocation: %s\nPage: %s\nDevice: %s\n%s", visit.IPAddress, location, visit.PageVisited, device, emoji)
 
 	body := models.DiscordRequest{
 		Content: content,
