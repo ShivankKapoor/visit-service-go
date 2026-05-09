@@ -20,6 +20,9 @@ import (
 )
 
 func main() {
+	if service.IsProd() {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	godotenv.Load()
 
 	if err := database.Init(); err != nil {
