@@ -13,6 +13,7 @@ import (
 	"visit-service/internal/routes"
 	"visit-service/internal/service"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -33,6 +34,13 @@ func main() {
 	defer service.StopDailyReportTask()
 
 	r := gin.Default()
+
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowAllOrigins = true
+	corsConfig.AllowMethods = []string{"GET", "POST", "OPTIONS"}
+	corsConfig.AllowHeaders = []string{"Content-Type", "Authorization"}
+	r.Use(cors.New(corsConfig))
+
 	r.Use(middleware.RateLimit())
 
 	routes.Configure(r)
