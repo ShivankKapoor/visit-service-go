@@ -5,6 +5,7 @@ import (
 	"visit-service/internal/database"
 	"visit-service/internal/middleware"
 	"visit-service/internal/routes"
+	"visit-service/internal/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -17,6 +18,11 @@ func main() {
 		log.Fatal(err)
 	}
 	defer database.Close()
+
+	if err := service.SetupDailyReportTask(); err != nil {
+		log.Fatal(err)
+	}
+	defer service.StopDailyReportTask()
 
 	// Creates a router with default logging and recovery middleware
 	r := gin.Default()
