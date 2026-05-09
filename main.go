@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 	"visit-service/internal/database"
@@ -36,9 +37,23 @@ func main() {
 	r := gin.Default()
 
 	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowAllOrigins = true
 	corsConfig.AllowMethods = []string{"GET", "POST", "OPTIONS"}
 	corsConfig.AllowHeaders = []string{"Content-Type", "Authorization"}
+
+	if service.IsProd() {
+		allowedOriginsStr := os.Getenv("ALLOWED_ORIGINS")
+		if allowedOriginsStr == "" {
+			slog.Error("ALLOWED_ORIGINS not set in production")
+			os.Exit(1)
+		}
+		allowedOrigins := strings.Split(allowedOriginsStr, ",")
+		corsConfig.AllowOrigins = allowedOrigins
+		slog.Info("CORS restricted", "origins", allowedOrigins)
+	} else {
+		corsConfig.AllowAllOrigins = true
+		slog.Info("CORS allows all origins (dev mode)")
+	}
+
 	r.Use(cors.New(corsConfig))
 
 	r.Use(middleware.RateLimit())

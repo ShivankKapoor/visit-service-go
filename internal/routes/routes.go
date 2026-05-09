@@ -2,6 +2,7 @@ package routes
 
 import (
 	"visit-service/internal/handlers"
+	"visit-service/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,9 +10,8 @@ import (
 func Configure(r *gin.Engine) {
 	v1 := r.Group("")
 	{
-		// We reference the function from the handlers package
 		v1.GET("/", handlers.Home)
-		v1.POST("/track", handlers.Track)
+		v1.POST("/track", middleware.AllowedReferer(), handlers.Track)
 		v1.GET("/admin/run-summary", handlers.TriggerDailySummary)
 	}
 }
