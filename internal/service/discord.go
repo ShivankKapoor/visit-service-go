@@ -27,19 +27,22 @@ func send(req models.DiscordRequest) error {
 	return nil
 }
 
+func getEmoji() string {
+	customEmoji := os.Getenv("CUSTOM_EMOJI_ID")
+	emoji := "🐹"
+	if customEmoji != "" {
+		emoji = customEmoji
+	}
+	return emoji
+}
+
 func SendVisitMessage(visit models.PageVisit, location string) {
 	device := "unknown"
 	if visit.DeviceInfo != nil {
 		device = *visit.DeviceInfo
 	}
 
-	customEmoji := os.Getenv("CUSTOM_EMOJI_ID")
-	emoji := "🐹"
-	if customEmoji != "" {
-		emoji = customEmoji
-	}
-
-	content := fmt.Sprintf("🌎 Visitor\nIP: %s\nLocation: %s\nPage: %s\nDevice: %s\n%s", visit.IPAddress, location, visit.PageVisited, device, emoji)
+	content := fmt.Sprintf("🌎 Visitor\nIP: %s\nLocation: %s\nPage: %s\nDevice: %s\n%s", visit.IPAddress, location, visit.PageVisited, device, getEmoji())
 
 	body := models.DiscordRequest{
 		Content: content,
