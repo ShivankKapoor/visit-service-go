@@ -12,7 +12,7 @@ func Health(c *gin.Context) {
 	dbHealth := "Unhealthy"
 	responseHealth := http.StatusInternalServerError
 	if service.GetDBHealth() {
-		dbHealth = "Health"
+		dbHealth = "Healthy"
 		responseHealth = http.StatusOK
 	}
 
