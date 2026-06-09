@@ -22,9 +22,9 @@ func TrackAsync(visit models.PageVisit) {
 		return
 	}
 
-	locationReq, err := GetLocation(visit.IPAddress)
+	locationReq, _ := GetLocation(visit.IPAddress)
 	location := "Unknown"
-	if err == nil && locationReq.Status != "fail" {
+	if locationReq.City != "UNKNOWN" {
 		location = locationReq.City + ", " + locationReq.RegionName + ", " + locationReq.Country
 	}
 	SendVisitMessage(visit, location)
