@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
+	"os"
 	"time"
 	"visit-service/internal/models"
 )
@@ -14,8 +14,15 @@ var httpClient = &http.Client{
 	Timeout: 30 * time.Second,
 }
 
+var unknownLocation = &models.IpLocationResponse{
+	Status:     "UNKNOWN",
+	Country:    "UNKNOWN",
+	RegionName: "UNKNOWN",
+	City:       "UNKNOWN",
+}
+
 func GetLocation(ip string) (*models.IpLocationResponse, error) {
-	url := "http://ip-api.com/json/" + ip + "?fields=status,country,regionName,city"
+	url := os.Getenv("MERIDIAN_URL") + "/location/" + ip
 
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -23,7 +30,7 @@ func GetLocation(ip string) (*models.IpLocationResponse, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		slog.Error("Error creating request to ip-api", "ip", ip, "error", err)
-		return nil, err
+		return unknownLocation, nil
 	}
 
 	resp, err := httpClient.Do(req)
@@ -33,14 +40,14 @@ func GetLocation(ip string) (*models.IpLocationResponse, error) {
 		} else {
 			slog.Error("Error getting location from ip-api", "ip", ip, "error", err)
 		}
-		return nil, err
+		return unknownLocation, nil
 	}
 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		fmt.Printf("Error: Status Code %d\n", resp.StatusCode)
-		return nil, fmt.Errorf("ip-api returned status %d", resp.StatusCode)
+		slog.Error("Error getting location from ip-api", "ip", ip, "status", resp.StatusCode)
+		return unknownLocation, nil
 	}
 
 	var location models.IpLocationResponse
@@ -48,7 +55,7 @@ func GetLocation(ip string) (*models.IpLocationResponse, error) {
 	err = json.NewDecoder(resp.Body).Decode(&location)
 	if err != nil {
 		slog.Error("Error decoding ip-api response", "error", err)
-		return nil, err
+		return unknownLocation, nil
 	}
 	return &location, nil
 }
