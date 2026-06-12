@@ -19,10 +19,10 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /", MainHandler.Home)
 
-	srv := &http.Server{Addr: ":8080", Handler: mux}
+	srv := &http.Server{Addr: ":8088", Handler: mux}
 
 	go func() {
-		slog.Info("Meridian web engine starting...", "port", ":8080")
+		slog.Info("Meridian web engine starting...", "port", ":8088")
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			slog.Error("Failed to start the web server", "error", err)
 			os.Exit(1)
