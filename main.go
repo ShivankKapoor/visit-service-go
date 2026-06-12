@@ -15,9 +15,11 @@ func main() {
 	slog.Info("Starting the visit service")
 
 	MainHandler := handler.NewMainHandler()
+	TrackHandler := handler.NewTrackHandler()
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /", MainHandler.Home)
+	mux.HandleFunc("POST /track", TrackHandler.Track)
 
 	srv := &http.Server{Addr: ":8088", Handler: mux}
 

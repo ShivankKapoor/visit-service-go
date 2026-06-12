@@ -11,7 +11,7 @@ func NewTrackHandler() *TrackHandler {
 	return &TrackHandler{}
 }
 
-func (h *MainHandler) Track(w http.ResponseWriter, r *http.Request) {
+func (h *TrackHandler) Track(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Track request incoming")
 
 }
