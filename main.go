@@ -9,9 +9,13 @@ import (
 	"syscall"
 	"time"
 	"visit-service/internal/handler"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	godotenv.Load()
+
 	slog.Info("Starting the visit service")
 
 	MainHandler := handler.NewMainHandler()
