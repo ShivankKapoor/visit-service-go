@@ -16,7 +16,7 @@ func NewMainHandler() *MainHandler {
 func (h *MainHandler) Home(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Home endpoint called")
 
-	resp := &dto.HomeDTO{
+	resp := &dto.HomeReponseDTO{
 		Name:     "Visit Service",
 		Platform: "Go",
 		Status:   "Up",
