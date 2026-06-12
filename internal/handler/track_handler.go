@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	dto "visit-service/internal/dto/request"
+	"visit-service/internal/dto"
 )
 
 type TrackHandler struct{}

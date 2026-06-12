@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
-	dto "visit-service/internal/dto/response"
+	"visit-service/internal/dto"
 )
 
 type MainHandler struct{}
