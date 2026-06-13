@@ -30,8 +30,6 @@ func (s *TrackService) Track(dto dto.TrackRequest, r *http.Request) {
 		deviceInfo = deviceInfo[:idx]
 	}
 
-	slog.Info("Track request parsed", "deviceInfo", dto.DeviceInfo, "pageVisited", dto.PageVisited, "Ip", ip)
-
 	visit := model.PageVisit{
 		ID:          uuid.New().String(),
 		IPAddress:   ip,
@@ -40,6 +38,8 @@ func (s *TrackService) Track(dto dto.TrackRequest, r *http.Request) {
 		UserAgent:   &userAgent,
 		Timestamp:   time.Now().UTC().Format(time.RFC3339),
 	}
+
+	slog.Info("Track request parsed", "ID: ", visit.ID, "IpAddress: ", visit.IPAddress, "DeviceInfo: ", visit.DeviceInfo, "UserAgent: ", visit.UserAgent, "Timestamp: ", visit.Timestamp)
 
 	visitRepository := repository.NewPageVisitRepository(s.db)
 	if err := visitRepository.InsertPageVisit(r.Context(), visit); err != nil {
