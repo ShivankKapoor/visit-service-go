@@ -33,4 +33,7 @@ func (h *TrackHandler) Track(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.trackService.Track(req, r)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode("OK")
 }
