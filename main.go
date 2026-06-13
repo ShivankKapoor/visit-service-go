@@ -10,6 +10,7 @@ import (
 	"time"
 	"visit-service/internal/db"
 	"visit-service/internal/handler"
+	"visit-service/internal/service"
 
 	"github.com/joho/godotenv"
 )
@@ -26,8 +27,10 @@ func main() {
 	}
 	defer pool.Close()
 
+	trackService := service.NewTrackService(pool)
+
 	MainHandler := handler.NewMainHandler()
-	TrackHandler := handler.NewTrackHandler(pool)
+	TrackHandler := handler.NewTrackHandler(trackService)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /", MainHandler.Home)

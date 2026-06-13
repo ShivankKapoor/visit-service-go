@@ -1,6 +1,6 @@
 package dto
 
-type HomeReponseDTO struct {
+type HomeResponseDTO struct {
 	Name     string `json:"name"`
 	Platform string `json:"platform"`
 	Status   string `json:"status"`

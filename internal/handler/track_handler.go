@@ -7,19 +7,18 @@ import (
 
 	"visit-service/internal/dto"
 	"visit-service/internal/service"
-
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type TrackHandler struct {
-	db *pgxpool.Pool
+	trackService *service.TrackService
 }
 
-func NewTrackHandler(db *pgxpool.Pool) *TrackHandler {
-	return &TrackHandler{db: db}
+func NewTrackHandler(trackService *service.TrackService) *TrackHandler {
+	return &TrackHandler{trackService: trackService}
 }
 
 func (h *TrackHandler) Track(w http.ResponseWriter, r *http.Request) {
+
 	slog.Info("Track request incoming")
 	var req dto.TrackRequest
 
@@ -32,5 +31,6 @@ func (h *TrackHandler) Track(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "deviceInfo and pageVisited are required", http.StatusBadRequest)
 		return
 	}
-	service.Track(req, r)
+
+	h.trackService.Track(req, r)
 }
