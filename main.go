@@ -40,7 +40,14 @@ func main() {
 	mux.HandleFunc("POST /track", TrackHandler.Track)
 	mux.HandleFunc("GET /run-daily-summary", CronHandler.RunDailySummary)
 
-	srv := &http.Server{Addr: ":8088", Handler: middleware.Cors(middleware.RateLimit(mux))}
+	srv := &http.Server{
+		Addr:              ":8088",
+		Handler:           middleware.Cors(middleware.RateLimit(mux)),
+		ReadHeaderTimeout: 20 * time.Second,
+		ReadTimeout:       20 * time.Second,
+		WriteTimeout:      20 * time.Second,
+		IdleTimeout:       20 * time.Second,
+	}
 
 	go func() {
 		slog.Info("Meridian web engine starting...", "port", ":8088")
