@@ -46,4 +46,6 @@ func (s *TrackService) Track(dto dto.TrackRequest, r *http.Request) {
 		slog.Error("Failed to insert page visit", "error", err)
 	}
 
+	SendVisitMessage(visit, "TODO()")
+
 }
