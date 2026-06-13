@@ -10,6 +10,7 @@ import (
 	"time"
 	"visit-service/internal/db"
 	"visit-service/internal/handler"
+	"visit-service/internal/middleware"
 	"visit-service/internal/service"
 
 	"github.com/joho/godotenv"
@@ -39,7 +40,7 @@ func main() {
 	mux.HandleFunc("POST /track", TrackHandler.Track)
 	mux.HandleFunc("GET /run-daily-summary", CronHandler.RunDailySummary)
 
-	srv := &http.Server{Addr: ":8088", Handler: mux}
+	srv := &http.Server{Addr: ":8088", Handler: middleware.Cors(middleware.RateLimit(mux))}
 
 	go func() {
 		slog.Info("Meridian web engine starting...", "port", ":8088")

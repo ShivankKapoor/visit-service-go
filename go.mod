@@ -5,6 +5,11 @@ go 1.26.2
 require github.com/joho/godotenv v1.5.1
 
 require (
+	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
+	golang.org/x/time v0.15.0
+)
+
+require (
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
