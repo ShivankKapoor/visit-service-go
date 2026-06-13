@@ -28,13 +28,16 @@ func main() {
 	defer pool.Close()
 
 	trackService := service.NewTrackService(pool)
+	service.StartDailyCron(pool)
 
 	MainHandler := handler.NewMainHandler()
 	TrackHandler := handler.NewTrackHandler(trackService)
+	CronHandler := handler.NewCronHandler(pool)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /", MainHandler.Home)
 	mux.HandleFunc("POST /track", TrackHandler.Track)
+	mux.HandleFunc("GET /run-daily-summary", CronHandler.RunDailySummary)
 
 	srv := &http.Server{Addr: ":8088", Handler: mux}
 
