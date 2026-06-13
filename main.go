@@ -42,7 +42,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:              ":8088",
-		Handler:           middleware.Cors(middleware.RateLimit(mux)),
+		Handler:           middleware.Cors(middleware.AllowedReferer(middleware.RateLimit(mux))),
 		ReadHeaderTimeout: 20 * time.Second,
 		ReadTimeout:       20 * time.Second,
 		WriteTimeout:      20 * time.Second,
