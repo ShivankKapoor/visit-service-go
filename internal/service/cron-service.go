@@ -52,5 +52,5 @@ func RunDailySummary(db *pgxpool.Pool) {
 	}
 
 	slog.Info("Daily visit summary saved", "date", yesterdayStart.Format("2006-01-02"), "visits", count)
-	SendDailyVisitsMessage(int(count))
+	go SendDailyVisitsMessage(int(count))
 }

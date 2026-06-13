@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -42,13 +43,13 @@ func (s *TrackService) Track(dto dto.TrackRequest, r *http.Request) {
 	slog.Info("Track request parsed", "id", visit.ID, "ip", visit.IPAddress, "device", *visit.DeviceInfo, "userAgent", *visit.UserAgent, "timestamp", visit.Timestamp)
 
 	visitRepository := repository.NewPageVisitRepository(s.db)
-	if err := visitRepository.InsertPageVisit(r.Context(), visit); err != nil {
+	if err := visitRepository.InsertPageVisit(context.Background(), visit); err != nil {
 		slog.Error("Failed to insert page visit", "error", err)
 	}
 
 	location := GetLocation(visit.IPAddress)
 	locationString := (location.City + ", " + location.RegionName + ", " + location.Country)
 
-	SendVisitMessage(visit, locationString)
+	go SendVisitMessage(visit, locationString)
 
 }
