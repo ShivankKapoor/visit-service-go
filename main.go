@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"visit-service/internal/db"
 	"visit-service/internal/handler"
 
 	"github.com/joho/godotenv"
@@ -18,8 +19,15 @@ func main() {
 
 	slog.Info("Starting the visit service")
 
+	pool, err := db.New()
+	if err != nil {
+		slog.Error("Failed to connect to database", "error", err)
+		os.Exit(1)
+	}
+	defer pool.Close()
+
 	MainHandler := handler.NewMainHandler()
-	TrackHandler := handler.NewTrackHandler()
+	TrackHandler := handler.NewTrackHandler(pool)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /", MainHandler.Home)

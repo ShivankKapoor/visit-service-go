@@ -7,12 +7,16 @@ import (
 
 	"visit-service/internal/dto"
 	"visit-service/internal/service"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type TrackHandler struct{}
+type TrackHandler struct {
+	db *pgxpool.Pool
+}
 
-func NewTrackHandler() *TrackHandler {
-	return &TrackHandler{}
+func NewTrackHandler(db *pgxpool.Pool) *TrackHandler {
+	return &TrackHandler{db: db}
 }
 
 func (h *TrackHandler) Track(w http.ResponseWriter, r *http.Request) {
