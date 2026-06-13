@@ -39,13 +39,16 @@ func (s *TrackService) Track(dto dto.TrackRequest, r *http.Request) {
 		Timestamp:   time.Now().UTC().Format(time.RFC3339),
 	}
 
-	slog.Info("Track request parsed", "ID: ", visit.ID, "IpAddress: ", visit.IPAddress, "DeviceInfo: ", visit.DeviceInfo, "UserAgent: ", visit.UserAgent, "Timestamp: ", visit.Timestamp)
+	slog.Info("Track request parsed", "id", visit.ID, "ip", visit.IPAddress, "device", *visit.DeviceInfo, "userAgent", *visit.UserAgent, "timestamp", visit.Timestamp)
 
 	visitRepository := repository.NewPageVisitRepository(s.db)
 	if err := visitRepository.InsertPageVisit(r.Context(), visit); err != nil {
 		slog.Error("Failed to insert page visit", "error", err)
 	}
 
-	SendVisitMessage(visit, "TODO()")
+	location := GetLocation(visit.IPAddress)
+	locationString := (location.City + ", " + location.RegionName + ", " + location.Country)
+
+	SendVisitMessage(visit, locationString)
 
 }
