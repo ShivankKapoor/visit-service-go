@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 )
@@ -19,8 +20,18 @@ func AllowedReferer(next http.Handler) http.Handler {
 			return
 		}
 
+		refURL, err := url.Parse(referer)
+		if err != nil {
+			http.Error(w, "forbidden", http.StatusForbidden)
+			return
+		}
+
 		for _, origin := range strings.Split(os.Getenv("ALLOWED_ORIGINS"), ",") {
-			if strings.Contains(referer, strings.TrimSpace(origin)) {
+			allowedURL, err := url.Parse(strings.TrimSpace(origin))
+			if err != nil {
+				continue
+			}
+			if refURL.Host == allowedURL.Host {
 				next.ServeHTTP(w, r)
 				return
 			}
