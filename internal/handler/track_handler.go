@@ -32,7 +32,10 @@ func (h *TrackHandler) Track(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	go h.trackService.Track(req, r)
+	ip := service.GetClientIP(r)
+	userAgent := r.Header.Get("User-Agent")
+
+	go h.trackService.Track(req, ip, userAgent)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode("OK")

@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"log/slog"
-	"net/http"
 	"strings"
 	"time"
 	"visit-service/internal/dto"
@@ -22,9 +21,7 @@ func NewTrackService(db *pgxpool.Pool) *TrackService {
 	return &TrackService{db: db}
 }
 
-func (s *TrackService) Track(dto dto.TrackRequest, r *http.Request) {
-	ip := GetClientIP(r)
-	userAgent := r.Header.Get("User-Agent")
+func (s *TrackService) Track(dto dto.TrackRequest, ip string, userAgent string) {
 
 	deviceInfo := dto.DeviceInfo
 	if idx := strings.Index(deviceInfo, ","); idx != -1 {
