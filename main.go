@@ -34,15 +34,17 @@ func main() {
 	MainHandler := handler.NewMainHandler()
 	TrackHandler := handler.NewTrackHandler(trackService)
 	CronHandler := handler.NewCronHandler(pool)
+	HealthHandler := handler.NewHealthHandler(pool)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /", MainHandler.Home)
-	mux.HandleFunc("POST /track", TrackHandler.Track)
-	mux.HandleFunc("GET /run-daily-summary", CronHandler.RunDailySummary)
+	mux.Handle("POST /track", middleware.AllowedReferer(http.HandlerFunc(TrackHandler.Track)))
+	mux.Handle("GET /run-daily-summary", middleware.AllowedReferer(http.HandlerFunc(CronHandler.RunDailySummary)))
+	mux.HandleFunc("GET /health", HealthHandler.Health)
 
 	srv := &http.Server{
 		Addr:              ":8088",
-		Handler:           middleware.Cors(middleware.AllowedReferer(middleware.RateLimit(mux))),
+		Handler:           middleware.Cors(middleware.RateLimit(mux)),
 		ReadHeaderTimeout: 20 * time.Second,
 		ReadTimeout:       20 * time.Second,
 		WriteTimeout:      20 * time.Second,
