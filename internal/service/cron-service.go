@@ -11,6 +11,8 @@ import (
 
 var cst = mustLoadLocation("America/Chicago")
 
+var stopCron = make(chan struct{})
+
 func mustLoadLocation(name string) *time.Location {
 	loc, err := time.LoadLocation(name)
 	if err != nil {
@@ -24,10 +26,20 @@ func StartDailyCron(db *pgxpool.Pool) {
 		for {
 			now := time.Now().In(cst)
 			nextMidnight := time.Date(now.Year(), now.Month(), now.Day()+1, 0, 0, 0, 0, cst)
-			time.Sleep(time.Until(nextMidnight))
-			RunDailySummary(db)
+			slog.Info("Daily cron scheduled", "next_run", nextMidnight.Format("2006-01-02 15:04:05 MST"))
+			select {
+			case <-time.After(time.Until(nextMidnight)):
+				RunDailySummary(db)
+			case <-stopCron:
+				slog.Info("Daily cron stopped")
+				return
+			}
 		}
 	}()
+}
+
+func StopDailyCron() {
+	close(stopCron)
 }
 
 func RunDailySummary(db *pgxpool.Pool) {

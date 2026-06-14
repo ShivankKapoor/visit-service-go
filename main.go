@@ -35,6 +35,7 @@ func main() {
 
 	trackService := service.NewTrackService(pool)
 	service.StartDailyCron(pool)
+	defer service.StopDailyCron()
 
 	MainHandler := handler.NewMainHandler()
 	TrackHandler := handler.NewTrackHandler(trackService)
