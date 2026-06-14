@@ -19,7 +19,7 @@ import (
 func main() {
 	godotenv.Load()
 
-	slog.Info("Starting the visit service")
+	slog.Info("Starting the visit service v2")
 
 	if os.Getenv("PROD") == "true" && os.Getenv("ALLOWED_ORIGINS") == "" {
 		slog.Error("ALLOWED_ORIGINS must be set in production")
