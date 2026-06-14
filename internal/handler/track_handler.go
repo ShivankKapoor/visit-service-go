@@ -22,6 +22,7 @@ func (h *TrackHandler) Track(w http.ResponseWriter, r *http.Request) {
 	slog.Info("Track request incoming")
 	var req dto.TrackRequest
 
+	r.Body = http.MaxBytesReader(w, r.Body, 4096)
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
