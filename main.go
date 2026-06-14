@@ -60,7 +60,7 @@ func main() {
 	}
 
 	go func() {
-		slog.Info("Meridian web engine starting...", "port", ":8088")
+		slog.Info("Visit log web engine starting...", "port", ":8088")
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			slog.Error("Failed to start the web server", "error", err)
 			os.Exit(1)
