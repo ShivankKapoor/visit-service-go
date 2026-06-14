@@ -21,6 +21,11 @@ func main() {
 
 	slog.Info("Starting the visit service")
 
+	if os.Getenv("PROD") == "true" && os.Getenv("ALLOWED_ORIGINS") == "" {
+		slog.Error("ALLOWED_ORIGINS must be set in production")
+		os.Exit(1)
+	}
+
 	pool, err := db.New()
 	if err != nil {
 		slog.Error("Failed to connect to database", "error", err)
@@ -39,7 +44,9 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /", MainHandler.Home)
 	mux.Handle("POST /track", middleware.AllowedReferer(http.HandlerFunc(TrackHandler.Track)))
-	mux.Handle("GET /run-daily-summary", middleware.AllowedReferer(http.HandlerFunc(CronHandler.RunDailySummary)))
+	if os.Getenv("PROD") != "true" {
+		mux.HandleFunc("GET /run-daily-summary", CronHandler.RunDailySummary)
+	}
 	mux.HandleFunc("GET /health", HealthHandler.Health)
 
 	srv := &http.Server{

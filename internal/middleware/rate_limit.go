@@ -3,6 +3,7 @@ package middleware
 import (
 	"log/slog"
 	"net/http"
+	"sync"
 	"time"
 	"visit-service/internal/service"
 
@@ -10,9 +11,14 @@ import (
 	"golang.org/x/time/rate"
 )
 
-var cache = gocache.New(5*time.Minute, 10*time.Minute)
+var (
+	cache = gocache.New(5*time.Minute, 10*time.Minute)
+	mu    sync.Mutex
+)
 
 func getLimiter(ip string) *rate.Limiter {
+	mu.Lock()
+	defer mu.Unlock()
 	if l, found := cache.Get(ip); found {
 		return l.(*rate.Limiter)
 	}

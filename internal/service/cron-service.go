@@ -35,18 +35,19 @@ func RunDailySummary(db *pgxpool.Pool) {
 	yesterdayStart := time.Date(now.Year(), now.Month(), now.Day()-1, 0, 0, 0, 0, cst)
 	yesterdayEnd := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, cst)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
 	repo := repository.NewDailyVisitStatsRepository(db)
 
-	count, err := repo.CountVisitsForDay(ctx, yesterdayStart, yesterdayEnd)
+	countCtx, countCancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer countCancel()
+	count, err := repo.CountVisitsForDay(countCtx, yesterdayStart, yesterdayEnd)
 	if err != nil {
 		slog.Error("Failed to count daily visits", "err", err)
 		return
 	}
 
-	if err := repo.InsertDailyVisitStat(ctx, yesterdayStart, count); err != nil {
+	insertCtx, insertCancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer insertCancel()
+	if err := repo.InsertDailyVisitStat(insertCtx, yesterdayStart, count); err != nil {
 		slog.Error("Failed to insert daily visit stat", "err", err)
 		return
 	}
